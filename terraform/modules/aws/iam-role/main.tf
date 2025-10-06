@@ -4,6 +4,9 @@ resource "aws_iam_role" "custom_role" {
   assume_role_policy = var.assume_role_policy
   # Prevents deletion if role has active policies (good practice)
   force_detach_policies = true
+
+  # Apply tags to the Role
+  tags = var.tags
 }
 
 # 2. Attach policies dynamically using a 'for_each' loop
@@ -25,6 +28,9 @@ resource "aws_iam_user" "assumer" {
   name  = var.iam_user_name
   # The user's path is set to ensure it's not a root user.
   path = "/service-users/"
+
+  # Apply tags to the Role
+  tags = var.tags
 }
 
 # Define the policy that allows the user to assume the role created in step 1

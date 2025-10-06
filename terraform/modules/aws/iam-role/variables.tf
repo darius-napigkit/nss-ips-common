@@ -45,3 +45,9 @@ variable "assign_power_user_policy" {
   type        = bool
   default     = false
 }
+
+variable "tags" {
+  description = "A map of tags to assign to the IAM resources."
+  type        = map(string)
+  default     = {}
+}
