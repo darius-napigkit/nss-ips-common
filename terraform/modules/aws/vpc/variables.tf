@@ -26,6 +26,11 @@ variable "create_custom_vpc" {
   description = "Whether to create a custom VPC"
   type        = bool
   default     = true
+
+  validation {
+    condition     = !(var.create_custom_vpc && (length(var.public_subnets) != length(var.private_subnets) || length(var.public_subnets) != length(var.azs)))
+    error_message = "When creating a custom VPC, public_subnets, private_subnets, and azs lists must be the same non-zero length."
+  }
 }
 
 variable "vpc_cidr" {
@@ -62,10 +67,4 @@ variable "single_nat_gateway" {
   description = "Use a single NAT gateway across all private subnets (cost saver)"
   type        = bool
   default     = true
-}
-
-# Basic validations
-validation {
-  condition     = !(var.create_custom_vpc && (length(var.public_subnets) != length(var.private_subnets) || length(var.public_subnets) != length(var.azs)))
-  error_message = "When creating a custom VPC, public_subnets, private_subnets, and azs lists must be the same non-zero length."
 }
