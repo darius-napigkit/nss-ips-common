@@ -49,28 +49,16 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "key_name" {
-  description = "SSH key pair name"
-  type        = string
-  default     = null
-}
-
-variable "allowed_cidrs" {
-  description = "List of CIDR blocks allowed to connect (e.g., for SSH). If empty, no ingress is allowed."
+variable "security_group_ids" {
+  description = "List of Security Group IDs where to associate the EC2 instance"
   type        = list(string)
   default     = []
 }
 
-variable "allowed_port" {
-  description = "TCP port to allow from allowed_cidrs (e.g., 22 for SSH)"
-  type        = number
-  default     = 22
-}
-
-variable "egress_cidrs" {
-  description = "Egress CIDRs for the security group"
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
+variable "key_name" {
+  description = "SSH key pair name"
+  type        = string
+  default     = null
 }
 
 variable "tags" {

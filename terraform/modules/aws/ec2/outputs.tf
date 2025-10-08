@@ -12,8 +12,3 @@ output "private_ips" {
   description = "Private IPs of created instances"
   value       = [for i in aws_instance.this : i.private_ip]
 }
-
-output "security_group_id" {
-  description = "ID of the security group applied to instances"
-  value       = aws_security_group.this.id
-}
