@@ -4,6 +4,12 @@ variable "name" {
   default     = "nss-sg"
 }
 
+variable "description" {
+  description = "Description key for legacy single security group mode (used when security_groups is empty)"
+  type        = string
+  default     = "Security group for ..."
+}
+
 variable "target_vpc_id" {
   description = "Legacy: VPC ID for the single security group (used when security_groups is empty)"
   type        = string

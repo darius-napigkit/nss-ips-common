@@ -8,7 +8,7 @@ locals {
     sg_map = length(var.security_groups) == 0 ? {
       (var.name) = {
         vpc_id                 = var.target_vpc_id
-        description            = "Security group for ${var.name}"
+        description            = var.description
         tags                   = var.tags
         revoke_rules_on_delete = true
         ingress = length(var.allowed_cidrs) > 0 ? [for c in var.allowed_cidrs : {
