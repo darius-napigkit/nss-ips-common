@@ -5,7 +5,7 @@
 locals {
   legacy_sg = {
     for_use = length(var.security_groups) == 0 ? true : false
-    sg_map = length(var.security_groups) == 0 ? {
+    sg_map = length(var.security_groups) == 0 ? tomap({
       (var.name) = {
         vpc_id                 = var.target_vpc_id
         description            = var.description
@@ -28,7 +28,7 @@ locals {
           ipv6_cidr_blocks = []
         }] : []
       }
-    } : var.security_groups
+    }) : tomap(var.security_groups)
   }
 
   security_groups = local.legacy_sg.sg_map
