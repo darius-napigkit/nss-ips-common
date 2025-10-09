@@ -12,28 +12,20 @@ locals {
         tags                   = var.tags
         revoke_rules_on_delete = true
         ingress = length(var.allowed_cidrs) > 0 ? [for c in var.allowed_cidrs : {
-          description              = "allowed"
-          protocol                 = "tcp"
-          from_port                = var.allowed_port
-          to_port                  = var.allowed_port
-          cidr_blocks              = [c]
-          ipv6_cidr_blocks         = []
-          prefix_list_ids          = []
-          security_groups          = []
-          source_security_group_id = null
-          self                     = false
+          description      = "allowed"
+          protocol         = "tcp"
+          from_port        = var.allowed_port
+          to_port          = var.allowed_port
+          cidr_blocks      = [c]
+          ipv6_cidr_blocks = []
         }] : []
         egress = length(var.egress_cidrs) > 0 ? [{
-          description              = "egress"
-          protocol                 = "-1"
-          from_port                = 0
-          to_port                  = 0
-          cidr_blocks              = var.egress_cidrs
-          ipv6_cidr_blocks         = []
-          prefix_list_ids          = []
-          security_groups          = []
-          source_security_group_id = null
-          self                     = false
+          description      = "egress"
+          protocol         = "-1"
+          from_port        = 0
+          to_port          = 0
+          cidr_blocks      = var.egress_cidrs
+          ipv6_cidr_blocks = []
         }] : []
       }
     } : var.security_groups
