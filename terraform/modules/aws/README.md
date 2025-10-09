@@ -58,10 +58,24 @@ module "ec2_custom" {
   subnet_type = "private"
 
   name          = "custom-ec2"
-  ami = "ami-xxxxxxxx"    # provide a valid AMI for your region
+  ami           = "ami-xxxxxxxx"    # provide a valid AMI for your region
   instance_type = "t3.micro"
   allowed_cidrs = ["203.0.113.10/32"]
   allowed_port  = 22
+
+  # Option A: pass raw user_data content directly
+  # user_data = file("${path.module}/scripts/bootstrap.sh")
+
+  # Option B: let the module read the file (recommended if you prefer passing a path)
+  # Provide an absolute path or construct with path.module from root
+  # user_data_file = "${path.module}/scripts/bootstrap.sh"
+
+  # Optionally render the file as a template
+  # user_data_file         = "${path.module}/scripts/bootstrap.tpl"
+  # user_data_template_vars = {
+  #   env    = var.environment
+  #   region = var.region
+  # }
 }
 ```
 

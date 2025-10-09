@@ -81,9 +81,21 @@ EOT
 
 
 variable "user_data" {
-  description = "Optional user_data content. Pass null to disable, or provide file(\"${path.module}/script.sh\") from the calling module."
+  description = "Optional raw user_data content. Pass null to disable. If set, this takes precedence over user_data_file."
   type        = string
   default     = null
+}
+
+variable "user_data_file" {
+  description = "Optional path to a user_data file. Provide an absolute path, or build one in the root using path.module, e.g., \"$${path.module}/scripts/bootstrap.sh\"."
+  type        = string
+  default     = null
+}
+
+variable "user_data_template_vars" {
+  description = "Optional variables to render the user_data_file via templatefile(). If non-empty and user_data_file is set, templatefile() will be used; otherwise file() will be used."
+  type        = map(any)
+  default     = {}
 }
 
 variable "user_data_replace_on_change" {

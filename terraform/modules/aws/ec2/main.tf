@@ -14,10 +14,21 @@ data "aws_subnets" "default" {
   }
 }
 
-# Determine target VPC id
 locals {
-  target_vpc_id        = var.use_default_vpc ? data.aws_vpc.default[0].id : var.vpc_id
+  # target_vpc_id        = var.use_default_vpc ? data.aws_vpc.default[0].id : var.vpc_id
   candidate_subnet_ids = length(var.subnet_ids) > 0 ? var.subnet_ids : (var.use_default_vpc ? data.aws_subnets.default[0].ids : [])
+
+  # Compute effective user_data content with precedence:
+  # 1) var.user_data (raw string)
+  # 2) templatefile(var.user_data_file, var.user_data_template_vars) if a file and vars provided
+  # 3) file(var.user_data_file) if a file provided without vars
+  user_data_content = (
+    var.user_data != null ? var.user_data : (
+      var.user_data_file != null ? (
+        length(var.user_data_template_vars) > 0 ? templatefile(var.user_data_file, var.user_data_template_vars) : file(var.user_data_file)
+      ) : null
+    )
+  )
 }
 
 resource "aws_instance" "this" {
@@ -48,7 +59,7 @@ resource "aws_instance" "this" {
   }
 
   # Optional user_data
-  user_data                   = var.user_data
+  user_data                   = local.user_data_content
   user_data_replace_on_change = var.user_data_replace_on_change
 
   tags = merge({
