@@ -22,7 +22,7 @@ locals {
           security_groups          = []
           source_security_group_id = null
           self                     = false
-        }] : [{}]
+        }] : []
         egress = length(var.egress_cidrs) > 0 ? [{
           description              = "egress"
           protocol                 = "-1"
@@ -34,7 +34,7 @@ locals {
           security_groups          = []
           source_security_group_id = null
           self                     = false
-        }] : [{}]
+        }] : []
       }
     } : var.security_groups
   }
