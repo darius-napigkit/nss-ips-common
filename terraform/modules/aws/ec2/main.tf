@@ -29,6 +29,28 @@ resource "aws_instance" "this" {
   vpc_security_group_ids      = var.security_group_ids
   associate_public_ip_address = var.subnet_type == "public"
 
+  # Optional root_block_device
+  dynamic "root_block_device" {
+    for_each = var.root_block_device == null ? [] : [var.root_block_device]
+    content {
+      volume_size           = lookup(root_block_device.value, "volume_size", null)
+      volume_type           = lookup(root_block_device.value, "volume_type", null)
+      delete_on_termination = lookup(root_block_device.value, "delete_on_termination", null)
+      encrypted             = lookup(root_block_device.value, "encrypted", null)
+      kms_key_id            = lookup(root_block_device.value, "kms_key_id", null)
+      iops                  = lookup(root_block_device.value, "iops", null)
+      throughput            = lookup(root_block_device.value, "throughput", null)
+      # Some provider versions support tagging the EBS volume created for the root device:
+      tags = merge({
+        Name = "${var.name}-rbb"
+      }, var.tags)
+    }
+  }
+
+  # Optional user_data
+  user_data                   = var.user_data
+  user_data_replace_on_change = var.user_data_replace_on_change
+
   tags = merge({
     Name = "${var.name}-${count.index}"
   }, var.tags)

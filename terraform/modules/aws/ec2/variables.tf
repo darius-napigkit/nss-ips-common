@@ -61,6 +61,37 @@ variable "key_name" {
   default     = null
 }
 
+variable "root_block_device" {
+  type        = any
+  default     = null
+  description = <<EOT
+Optional root block device configuration. Set to null to omit.
+Example:
+{
+  volume_size           = 20
+  volume_type           = "gp3"
+  delete_on_termination = true
+  encrypted             = true
+  kms_key_id            = "arn:aws:kms:REGION:ACCOUNT:key/KEY-ID"
+  iops                  = 3000
+  throughput            = 125
+}
+EOT
+}
+
+
+variable "user_data" {
+  description = "Optional user_data content. Pass null to disable, or provide file(\"${path.module}/script.sh\") from the calling module."
+  type        = string
+  default     = null
+}
+
+variable "user_data_replace_on_change" {
+  description = "Replace the instance when user_data changes"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Common tags to apply"
   type        = map(string)
