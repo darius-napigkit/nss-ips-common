@@ -37,7 +37,7 @@ variable "tags" {
 variable "security_groups" {
   description = "Map of security group definitions. Key = logical SG name. Each value is an object with: vpc_id (string), description (string, optional), tags (map(string), optional), revoke_rules_on_delete (bool, optional), ingress (list(object), optional), egress (list(object), optional). In rule objects you can use: description, protocol, from_port, to_port, cidr_blocks, ipv6_cidr_blocks, prefix_list_ids, security_groups (list of SG IDs to expand), source_security_group_id, self."
   type = object({
-    vpc_id                 = string
+    vpc_id                 = optional(string)
     description            = optional(string)
     tags                   = optional(map(string))
     revoke_rules_on_delete = optional(bool)
