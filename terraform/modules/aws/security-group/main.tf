@@ -5,24 +5,24 @@
 locals {
   legacy_sg = {
     for_use = length(var.security_groups) == 0 ? true : false
-    sg_map  = length(var.security_groups) == 0 ? {
+    sg_map = length(var.security_groups) == 0 ? {
       (var.name) = {
         vpc_id                 = var.target_vpc_id
         description            = "Security group for ${var.name}"
         tags                   = var.tags
         revoke_rules_on_delete = true
         ingress = length(var.allowed_cidrs) > 0 ? [for c in var.allowed_cidrs : {
-          description             = "allowed"
-          protocol                = "tcp"
-          from_port               = var.allowed_port
-          to_port                 = var.allowed_port
-          cidr_blocks             = [c]
-          ipv6_cidr_blocks        = []
-          prefix_list_ids         = []
-          security_groups         = []
+          description              = "allowed"
+          protocol                 = "tcp"
+          from_port                = var.allowed_port
+          to_port                  = var.allowed_port
+          cidr_blocks              = [c]
+          ipv6_cidr_blocks         = []
+          prefix_list_ids          = []
+          security_groups          = []
           source_security_group_id = null
-          self                    = false
-        }] : []
+          self                     = false
+        }] : [{}]
         egress = length(var.egress_cidrs) > 0 ? [{
           description              = "egress"
           protocol                 = "-1"
@@ -34,7 +34,7 @@ locals {
           security_groups          = []
           source_security_group_id = null
           self                     = false
-        }] : []
+        }] : [{}]
       }
     } : var.security_groups
   }
@@ -47,15 +47,15 @@ locals {
       for idx, r in lookup(sg, "ingress", []) : (
         length(lookup(r, "security_groups", [])) > 0
         ? [for i, ref_sg in r.security_groups : merge(r, {
-            key                         = "${sg_key}-ingress-${idx}-${i}"
-            sg_key                      = sg_key
-            source_security_group_id    = try(r.source_security_group_id, ref_sg)
-            security_groups             = null
-          })]
+          key                      = "${sg_key}-ingress-${idx}-${i}"
+          sg_key                   = sg_key
+          source_security_group_id = try(r.source_security_group_id, ref_sg)
+          security_groups          = null
+        })]
         : [merge(r, {
-            key    = "${sg_key}-ingress-${idx}"
-            sg_key = sg_key
-          })]
+          key    = "${sg_key}-ingress-${idx}"
+          sg_key = sg_key
+        })]
       )
     ]
   ])
@@ -65,15 +65,15 @@ locals {
       for idx, r in lookup(sg, "egress", []) : (
         length(lookup(r, "security_groups", [])) > 0
         ? [for i, ref_sg in r.security_groups : merge(r, {
-            key                         = "${sg_key}-egress-${idx}-${i}"
-            sg_key                      = sg_key
-            source_security_group_id    = try(r.source_security_group_id, ref_sg)
-            security_groups             = null
-          })]
+          key                      = "${sg_key}-egress-${idx}-${i}"
+          sg_key                   = sg_key
+          source_security_group_id = try(r.source_security_group_id, ref_sg)
+          security_groups          = null
+        })]
         : [merge(r, {
-            key    = "${sg_key}-egress-${idx}"
-            sg_key = sg_key
-          })]
+          key    = "${sg_key}-egress-${idx}"
+          sg_key = sg_key
+        })]
       )
     ]
   ])
